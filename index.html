@@ -5,188 +5,330 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>JetBrains 激活服务器列表</title>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
         <style>
+            :root {
+                --primary-color: #1a73e8;
+                --success-color: #34a853;
+                --error-color: #ea4335;
+                --background-color: #f8f9fa;
+                --card-background: #ffffff;
+                --text-primary: #202124;
+                --text-secondary: #5f6368;
+                --border-radius: 12px;
+                --transition: all 0.3s ease;
+            }
+
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
             body {
-                font-family: Arial, sans-serif;
-                max-width: 800px;
-                margin: 0 auto;
-                padding: 20px;
-                background-color: #f5f5f5;
+                font-family: 'Inter', sans-serif;
+                line-height: 1.6;
+                background-color: var(--background-color);
+                color: var(--text-primary);
             }
+
             .container {
-                background-color: white;
-                padding: 20px;
-                border-radius: 8px;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                max-width: 1000px;
+                margin: 2rem auto;
+                padding: 0 1rem;
             }
-            h1 {
-                color: #2b2b2b;
+
+            .header {
                 text-align: center;
+                margin-bottom: 2rem;
             }
+
+            .header h1 {
+                font-size: 2.5rem;
+                font-weight: 600;
+                margin-bottom: 0.5rem;
+                background: linear-gradient(45deg, var(--primary-color), var(--success-color));
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+
             .update-time {
-                color: #666;
-                text-align: center;
-                margin-bottom: 20px;
+                color: var(--text-secondary);
+                font-size: 0.9rem;
             }
+
+            .stats-container {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 1rem;
+                margin-bottom: 2rem;
+            }
+
+            .stats-card {
+                background: var(--card-background);
+                padding: 1.5rem;
+                border-radius: var(--border-radius);
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                text-align: center;
+                transition: var(--transition);
+            }
+
+            .stats-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+            }
+
+            .stats-value {
+                font-size: 2rem;
+                font-weight: 600;
+                margin-bottom: 0.5rem;
+            }
+
+            .stats-label {
+                color: var(--text-secondary);
+                font-size: 0.9rem;
+            }
+
+            .servers-section {
+                background: var(--card-background);
+                border-radius: var(--border-radius);
+                padding: 2rem;
+                margin-bottom: 2rem;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+                margin-bottom: 1rem;
+                padding-bottom: 0.5rem;
+                border-bottom: 2px solid var(--background-color);
+            }
+
             .server-list {
                 list-style: none;
-                padding: 0;
             }
+
             .server-item {
-                padding: 10px;
-                margin: 5px 0;
-                background-color: #f8f9fa;
-                border: 1px solid #e9ecef;
-                border-radius: 4px;
-                word-break: break-all;
+                padding: 1rem;
+                margin: 0.5rem 0;
+                border-radius: var(--border-radius);
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
+                transition: var(--transition);
             }
+
+            .valid {
+                background-color: rgba(52, 168, 83, 0.1);
+                border: 1px solid rgba(52, 168, 83, 0.2);
+            }
+
+            .invalid {
+                background-color: rgba(234, 67, 53, 0.1);
+                border: 1px solid rgba(234, 67, 53, 0.2);
+            }
+
             .server-item:hover {
-                background-color: #e9ecef;
+                transform: translateX(5px);
             }
+
+            .server-url {
+                font-family: monospace;
+                font-size: 0.95rem;
+            }
+
             .copy-btn {
-                background-color: #007bff;
+                background-color: var(--primary-color);
                 color: white;
                 border: none;
-                padding: 5px 10px;
-                border-radius: 4px;
+                padding: 0.5rem 1rem;
+                border-radius: 6px;
                 cursor: pointer;
-                font-size: 14px;
+                font-size: 0.9rem;
+                font-weight: 500;
+                transition: var(--transition);
             }
+
             .copy-btn:hover {
-                background-color: #0056b3;
+                background-color: #1557b0;
+                transform: scale(1.05);
             }
+
             .copy-btn.copied {
-                background-color: #28a745;
+                background-color: var(--success-color);
             }
-            @media (max-width: 600px) {
-                body {
-                    padding: 10px;
+
+            @media (max-width: 768px) {
+                .container {
+                    margin: 1rem auto;
                 }
+
+                .header h1 {
+                    font-size: 2rem;
+                }
+
+                .stats-card {
+                    padding: 1rem;
+                }
+
+                .stats-value {
+                    font-size: 1.5rem;
+                }
+
+                .servers-section {
+                    padding: 1rem;
+                }
+
                 .server-item {
-                    font-size: 14px;
+                    flex-direction: column;
+                    gap: 0.5rem;
+                    text-align: center;
                 }
-                .copy-btn {
-                    padding: 4px 8px;
-                    font-size: 12px;
+
+                .server-url {
+                    word-break: break-all;
                 }
             }
         </style>
     </head>
     <body>
         <div class="container">
-            <h1>JetBrains 激活服务器列表</h1>
-            <div class="update-time">更新时间: 2025-02-01 17:02:21</div>
-            <ul class="server-list">
-                
-                    <li class="server-item">
-                        <span class="server-url">https://47.104.217.26</span>
-                        <button class="copy-btn" onclick="copyToClipboard(this, 'https://47.104.217.26')">复制</button>
+            <div class="header">
+                <h1>JetBrains 激活服务器列表</h1>
+                <div class="update-time">更新时间: 2025-02-01 17:30:52</div>
+            </div>
+            
+            <div class="stats-container">
+                <div class="stats-card">
+                    <div class="stats-value">17</div>
+                    <div class="stats-label">总服务器数量</div>
+                </div>
+                <div class="stats-card">
+                    <div class="stats-value" style="color: var(--success-color)">13</div>
+                    <div class="stats-label">有效服务器数量</div>
+                </div>
+                <div class="stats-card">
+                    <div class="stats-value" style="color: var(--error-color)">4</div>
+                    <div class="stats-label">无效服务器数量</div>
+                </div>
+            </div>
+
+            <div class="servers-section">
+                <h2 class="section-title">有效服务器</h2>
+                <ul class="server-list">
+                    
+                    <li class="server-item valid">
+                        <span class="server-url">http://150.254.115.186:8080</span>
+                        <button class="copy-btn" onclick="copyToClipboard(this, 'http://150.254.115.186:8080')">复制</button>
                     </li>
 
-                    <li class="server-item">
-                        <span class="server-url">https://188.210.42.106</span>
-                        <button class="copy-btn" onclick="copyToClipboard(this, 'https://188.210.42.106')">复制</button>
-                    </li>
-
-                    <li class="server-item">
-                        <span class="server-url">https://35.188.104.230</span>
-                        <button class="copy-btn" onclick="copyToClipboard(this, 'https://35.188.104.230')">复制</button>
-                    </li>
-
-                    <li class="server-item">
+                    <li class="server-item valid">
                         <span class="server-url">http://158.193.143.121:8080</span>
                         <button class="copy-btn" onclick="copyToClipboard(this, 'http://158.193.143.121:8080')">复制</button>
                     </li>
 
-                    <li class="server-item">
+                    <li class="server-item valid">
                         <span class="server-url">http://137.125.248.1:8080</span>
                         <button class="copy-btn" onclick="copyToClipboard(this, 'http://137.125.248.1:8080')">复制</button>
                     </li>
 
-                    <li class="server-item">
+                    <li class="server-item valid">
                         <span class="server-url">http://52.137.14.60:80</span>
                         <button class="copy-btn" onclick="copyToClipboard(this, 'http://52.137.14.60:80')">复制</button>
                     </li>
 
-                    <li class="server-item">
+                    <li class="server-item valid">
                         <span class="server-url">http://20.61.199.223:80</span>
                         <button class="copy-btn" onclick="copyToClipboard(this, 'http://20.61.199.223:80')">复制</button>
                     </li>
 
-                    <li class="server-item">
+                    <li class="server-item valid">
                         <span class="server-url">http://103.61.225.218:8081</span>
                         <button class="copy-btn" onclick="copyToClipboard(this, 'http://103.61.225.218:8081')">复制</button>
                     </li>
 
-                    <li class="server-item">
+                    <li class="server-item valid">
                         <span class="server-url">http://51.140.137.126:8080</span>
                         <button class="copy-btn" onclick="copyToClipboard(this, 'http://51.140.137.126:8080')">复制</button>
                     </li>
 
-                    <li class="server-item">
+                    <li class="server-item valid">
                         <span class="server-url">http://147.102.58.185:8888</span>
                         <button class="copy-btn" onclick="copyToClipboard(this, 'http://147.102.58.185:8888')">复制</button>
                     </li>
 
-                    <li class="server-item">
+                    <li class="server-item valid">
                         <span class="server-url">http://154.61.74.103:8081</span>
                         <button class="copy-btn" onclick="copyToClipboard(this, 'http://154.61.74.103:8081')">复制</button>
                     </li>
 
-                    <li class="server-item">
+                    <li class="server-item valid">
                         <span class="server-url">http://103.61.225.188:8081</span>
                         <button class="copy-btn" onclick="copyToClipboard(this, 'http://103.61.225.188:8081')">复制</button>
                     </li>
 
-                    <li class="server-item">
+                    <li class="server-item valid">
                         <span class="server-url">http://20.117.154.102:8080</span>
                         <button class="copy-btn" onclick="copyToClipboard(this, 'http://20.117.154.102:8080')">复制</button>
                     </li>
 
-                    <li class="server-item">
+                    <li class="server-item valid">
                         <span class="server-url">http://103.61.225.200:8081</span>
                         <button class="copy-btn" onclick="copyToClipboard(this, 'http://103.61.225.200:8081')">复制</button>
                     </li>
 
-                    <li class="server-item">
+                    <li class="server-item valid">
                         <span class="server-url">http://162.55.178.66:8181</span>
                         <button class="copy-btn" onclick="copyToClipboard(this, 'http://162.55.178.66:8181')">复制</button>
                     </li>
+                </ul>
+            </div>
 
-                    <li class="server-item">
+            <div class="servers-section">
+                <h2 class="section-title">无效服务器</h2>
+                <ul class="server-list">
+                    
+                    <li class="server-item invalid">
+                        <span class="server-url">https://47.104.217.26</span>
+                        <button class="copy-btn" onclick="copyToClipboard(this, 'https://47.104.217.26')">复制</button>
+                    </li>
+
+                    <li class="server-item invalid">
+                        <span class="server-url">https://188.210.42.106</span>
+                        <button class="copy-btn" onclick="copyToClipboard(this, 'https://188.210.42.106')">复制</button>
+                    </li>
+
+                    <li class="server-item invalid">
+                        <span class="server-url">https://35.188.104.230</span>
+                        <button class="copy-btn" onclick="copyToClipboard(this, 'https://35.188.104.230')">复制</button>
+                    </li>
+
+                    <li class="server-item invalid">
                         <span class="server-url">https://54.249.133.137</span>
                         <button class="copy-btn" onclick="copyToClipboard(this, 'https://54.249.133.137')">复制</button>
                     </li>
-
-                    <li class="server-item">
-                        <span class="server-url">http://150.254.115.186:8080</span>
-                        <button class="copy-btn" onclick="copyToClipboard(this, 'http://150.254.115.186:8080')">复制</button>
-                    </li>
-            </ul>
+                </ul>
+            </div>
         </div>
         
         <script>
-        function copyToClipboard(button, text) {
-            // 创建临时输入框
-            const input = document.createElement('input');
-            input.value = text;
-            document.body.appendChild(input);
-            input.select();
-            document.execCommand('copy');
-            document.body.removeChild(input);
-            
-            // 更新按钮状态
-            button.textContent = '已复制';
-            button.classList.add('copied');
-            
-            // 2秒后恢复按钮状态
-            setTimeout(() => {
-                button.textContent = '复制';
-                button.classList.remove('copied');
-            }, 2000);
+        async function copyToClipboard(button, text) {
+            try {
+                await navigator.clipboard.writeText(text);
+                button.textContent = '已复制';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = '复制';
+                    button.classList.remove('copied');
+                }, 2000);
+            } catch (err) {
+                console.error('复制失败:', err);
+                button.textContent = '复制失败';
+                setTimeout(() => {
+                    button.textContent = '复制';
+                }, 2000);
+            }
         }
         </script>
     </body>
