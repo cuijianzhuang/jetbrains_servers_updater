@@ -1,6 +1,10 @@
 name: Update Servers List
 
 on:
+  push:
+    branches:
+      - main
+      - master
   schedule:
     - cron: '0 1 * * 1'  # 每周一的 UTC 1:00 运行（相当于北京时间 9:00）
   workflow_dispatch:  # 允许手动触发
@@ -17,6 +21,11 @@ jobs:
       with:
         python-version: '3.x'
         
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests beautifulsoup4
+        
     - name: Configure Git
       run: |
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
@@ -24,10 +33,10 @@ jobs:
         
     - name: Update and commit changes
       run: |
-        # 这里添加更新服务器列表的命令
+        python jetbrains_servers_updater.py
         
         # 提交更改
-        git add index.html
+        git add .
         git diff --quiet && git diff --staged --quiet || (git commit -m "Update servers list" && git push)
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
