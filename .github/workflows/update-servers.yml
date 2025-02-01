@@ -39,5 +39,4 @@ jobs:
         git add .
         git diff --quiet && git diff --staged --quiet || (git commit -m "Update servers list" && git push)
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SHODAN_API_KEY: ${{ secrets.SHODAN_API_KEY }}
