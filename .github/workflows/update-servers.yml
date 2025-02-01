@@ -6,7 +6,9 @@ on:
       - main
       - master
   schedule:
-    - cron: '0 1 * * 1'  # 每周一的 UTC 1:00 运行（相当于北京时间 9:00）
+#    - cron: '0 1 * * 1'  # 每周一的 UTC 1:00 运行（相当于北京时间 9:00）
+    - cron: '0 1 * * *'  # 每天 UTC 1:00 运行（相当于北京时间 9:00）
+
   workflow_dispatch:  # 允许手动触发
 
 jobs:
