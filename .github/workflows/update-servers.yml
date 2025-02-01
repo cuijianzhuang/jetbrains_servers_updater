@@ -1,36 +1,103 @@
 name: Update JetBrains Servers
 
+
+
 on:
+
   schedule:
+
     - cron: '0 1 * * 1'  # 每周一的 UTC 1:00 运行（相当于北京时间 9:00）
+
   workflow_dispatch:      # 允许手动触发
 
+  push:
+
+    branches: [ main ]    # 当推送到main分支时也触发
+
+
+
+permissions:
+
+  contents: write        # 允许工作流写入仓库内容
+
+
+
 jobs:
+
   update-servers:
+
     runs-on: ubuntu-latest
-    
+
+
+
     steps:
-    - uses: actions/checkout@v2
-    
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.x'
-    
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install shodan schedule
-    
-    - name: Update servers
-      env:
-        SHODAN_API_KEY: ${{ secrets.SHODAN_API_KEY }}
-      run: python jetbrains_servers_updater.py
-    
-    - name: Commit and push if changed
-      run: |
-        git config --local user.email "github-actions[bot]@users.noreply.github.com"
-        git config --local user.name "github-actions[bot]"
-        git add jetbrains_servers.txt index.html
-        git commit -m "Update servers list" || exit 0
-        git push 
+
+      - uses: actions/checkout@v3
+
+        with:
+
+          fetch-depth: 0   # 获取完整的git历史
+
+
+
+      - name: Set up Python
+
+        uses: actions/setup-python@v4
+
+        with:
+
+          python-version: '3.x'
+
+
+
+      - name: Install dependencies
+
+        run: |
+          
+          python -m pip install --upgrade pip
+          
+          pip install shodan
+
+
+
+      - name: Update servers
+
+        env:
+
+          SHODAN_API_KEY: ${{ secrets.SHODAN_API_KEY }}
+
+        run: python jetbrains_servers_updater.py
+
+
+
+      - name: Deploy to GitHub Pages
+
+        uses: peaceiris/actions-gh-pages@v3
+
+        with:
+
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+          publish_dir: .
+
+          force_orphan: true
+
+          user_name: 'github-actions[bot]'
+
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+
+          commit_message: 'Update servers list'
+
+
+
+      - name: Commit and push if changed
+
+        run: |
+          
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          
+          git config --local user.name "github-actions[bot]"
+          
+          git add jetbrains_servers.txt index.html
+          
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Update servers list" && git push) 
