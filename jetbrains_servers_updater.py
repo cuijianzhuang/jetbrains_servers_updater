@@ -1,6 +1,7 @@
 import shodan
 import os
 from datetime import datetime
+import pytz
 from typing import List
 import requests
 
@@ -12,6 +13,17 @@ SHODAN_API_KEY = os.getenv('SHODAN_API_KEY')
 
 # 输出文件路径
 OUTPUT_FILE = "jetbrains_servers.txt"
+
+def get_beijing_time():
+    """
+    获取北京时间
+    
+    Returns:
+        str: 格式化的北京时间字符串
+    """
+    beijing_tz = pytz.timezone('Asia/Shanghai')
+    beijing_time = datetime.now(beijing_tz)
+    return beijing_time.strftime('%Y-%m-%d %H:%M:%S')
 
 def get_activation_servers() -> List[str]:
     """
@@ -257,7 +269,7 @@ def generate_html(valid_servers: List[str], invalid_servers: List[str]) -> None:
         <div class="container">
             <div class="header">
                 <h1>JetBrains 激活服务器列表</h1>
-                <div class="update-time">更新时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</div>
+                <div class="update-time">更新时间: {get_beijing_time()}</div>
             </div>
             
             <div class="stats-container">
@@ -340,7 +352,7 @@ def update_servers_file(servers: List[str], invalid_servers: List[str] = None) -
     try:
         with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
             f.write(f"# JetBrains激活服务器列表\n")
-            f.write(f"# 更新时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
+            f.write(f"# 更新时间: {get_beijing_time()}\n\n")
             for server in servers:
                 f.write(f"{server}\n")
         print(f"成功更新服务器列表，共{len(servers)}个有效服务器")
@@ -413,7 +425,7 @@ def test_all_servers(servers_list):
     return valid_servers, invalid_servers
 
 def main():
-    print(f"开始更新服务器列表 - {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"开始更新服务器列表 - {get_beijing_time()}")
     servers = get_activation_servers()
     if servers:
         # 先测试所有获取到的服务器
