@@ -2,7 +2,7 @@
 
 [![Update JetBrains Servers](https://github.com/cuijianzhuang/jetbrains_servers_updater/actions/workflows/update-servers.yml/badge.svg)](https://github.com/cuijianzhuang/jetbrains_servers_updater/actions/workflows/update-servers.yml)
 
-这个项目使用 GitHub Actions 自动获取并更新 JetBrains IDE 的激活服务器列表。每周一早上9点（北京时间）自动更新。
+这个项目使用 GitHub Actions 自动获取并更新 JetBrains IDE 的激活服务器列表。每天早上9点（北京时间）自动更新。
 
 ## 特性
 
