@@ -1,0 +1,189 @@
+
+    <!DOCTYPE html>
+    <html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>JetBrains 激活服务器列表</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                max-width: 800px;
+                margin: 0 auto;
+                padding: 20px;
+                background-color: #f5f5f5;
+            }
+            .container {
+                background-color: white;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            h1 {
+                color: #2b2b2b;
+                text-align: center;
+            }
+            .update-time {
+                color: #666;
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            .server-list {
+                list-style: none;
+                padding: 0;
+            }
+            .server-item {
+                padding: 10px;
+                margin: 5px 0;
+                background-color: #f8f9fa;
+                border: 1px solid #e9ecef;
+                border-radius: 4px;
+                word-break: break-all;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .server-item:hover {
+                background-color: #e9ecef;
+            }
+            .copy-btn {
+                background-color: #007bff;
+                color: white;
+                border: none;
+                padding: 5px 10px;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 14px;
+            }
+            .copy-btn:hover {
+                background-color: #0056b3;
+            }
+            .copy-btn.copied {
+                background-color: #28a745;
+            }
+            @media (max-width: 600px) {
+                body {
+                    padding: 10px;
+                }
+                .server-item {
+                    font-size: 14px;
+                }
+                .copy-btn {
+                    padding: 4px 8px;
+                    font-size: 12px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>JetBrains 激活服务器列表</h1>
+            <div class="update-time">更新时间: 2025-02-02 00:08:12</div>
+            <ul class="server-list">
+                
+                    <li class="server-item">
+                        <span class="server-url">https://188.210.42.106</span>
+                        <button class="copy-btn" onclick="copyToClipboard(this, 'https://188.210.42.106')">复制</button>
+                    </li>
+
+                    <li class="server-item">
+                        <span class="server-url">https://35.188.104.230</span>
+                        <button class="copy-btn" onclick="copyToClipboard(this, 'https://35.188.104.230')">复制</button>
+                    </li>
+
+                    <li class="server-item">
+                        <span class="server-url">http://158.193.143.121:8080</span>
+                        <button class="copy-btn" onclick="copyToClipboard(this, 'http://158.193.143.121:8080')">复制</button>
+                    </li>
+
+                    <li class="server-item">
+                        <span class="server-url">http://137.125.248.1:8080</span>
+                        <button class="copy-btn" onclick="copyToClipboard(this, 'http://137.125.248.1:8080')">复制</button>
+                    </li>
+
+                    <li class="server-item">
+                        <span class="server-url">http://52.137.14.60:80</span>
+                        <button class="copy-btn" onclick="copyToClipboard(this, 'http://52.137.14.60:80')">复制</button>
+                    </li>
+
+                    <li class="server-item">
+                        <span class="server-url">http://20.61.199.223:80</span>
+                        <button class="copy-btn" onclick="copyToClipboard(this, 'http://20.61.199.223:80')">复制</button>
+                    </li>
+
+                    <li class="server-item">
+                        <span class="server-url">http://103.61.225.218:8081</span>
+                        <button class="copy-btn" onclick="copyToClipboard(this, 'http://103.61.225.218:8081')">复制</button>
+                    </li>
+
+                    <li class="server-item">
+                        <span class="server-url">http://51.140.137.126:8080</span>
+                        <button class="copy-btn" onclick="copyToClipboard(this, 'http://51.140.137.126:8080')">复制</button>
+                    </li>
+
+                    <li class="server-item">
+                        <span class="server-url">http://147.102.58.185:8888</span>
+                        <button class="copy-btn" onclick="copyToClipboard(this, 'http://147.102.58.185:8888')">复制</button>
+                    </li>
+
+                    <li class="server-item">
+                        <span class="server-url">http://154.61.74.103:8081</span>
+                        <button class="copy-btn" onclick="copyToClipboard(this, 'http://154.61.74.103:8081')">复制</button>
+                    </li>
+
+                    <li class="server-item">
+                        <span class="server-url">http://103.61.225.188:8081</span>
+                        <button class="copy-btn" onclick="copyToClipboard(this, 'http://103.61.225.188:8081')">复制</button>
+                    </li>
+
+                    <li class="server-item">
+                        <span class="server-url">http://20.117.154.102:8080</span>
+                        <button class="copy-btn" onclick="copyToClipboard(this, 'http://20.117.154.102:8080')">复制</button>
+                    </li>
+
+                    <li class="server-item">
+                        <span class="server-url">http://103.61.225.200:8081</span>
+                        <button class="copy-btn" onclick="copyToClipboard(this, 'http://103.61.225.200:8081')">复制</button>
+                    </li>
+
+                    <li class="server-item">
+                        <span class="server-url">http://162.55.178.66:8181</span>
+                        <button class="copy-btn" onclick="copyToClipboard(this, 'http://162.55.178.66:8181')">复制</button>
+                    </li>
+
+                    <li class="server-item">
+                        <span class="server-url">https://54.249.133.137</span>
+                        <button class="copy-btn" onclick="copyToClipboard(this, 'https://54.249.133.137')">复制</button>
+                    </li>
+
+                    <li class="server-item">
+                        <span class="server-url">http://150.254.115.186:8080</span>
+                        <button class="copy-btn" onclick="copyToClipboard(this, 'http://150.254.115.186:8080')">复制</button>
+                    </li>
+            </ul>
+        </div>
+        
+        <script>
+        function copyToClipboard(button, text) {
+            // 创建临时输入框
+            const input = document.createElement('input');
+            input.value = text;
+            document.body.appendChild(input);
+            input.select();
+            document.execCommand('copy');
+            document.body.removeChild(input);
+            
+            // 更新按钮状态
+            button.textContent = '已复制';
+            button.classList.add('copied');
+            
+            // 2秒后恢复按钮状态
+            setTimeout(() => {
+                button.textContent = '复制';
+                button.classList.remove('copied');
+            }, 2000);
+        }
+        </script>
+    </body>
+    </html>
+    
