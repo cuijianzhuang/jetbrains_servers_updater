@@ -42,11 +42,10 @@
    Windows
    set SHODAN_API_KEY=your-api-key
 
-4.运行
+4. 运行
    ```bash
-   
    python jetbrains_servers_updater.py
-   ```
+   
 ## 自动更新时间
 
 - 更新频率：每周一
