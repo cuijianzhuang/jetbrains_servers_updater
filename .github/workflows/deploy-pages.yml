@@ -1,23 +1,24 @@
 name: Deploy to GitHub Pages
 
 on:
-  push:
-    branches: [ main, master ]  # 当推送到主分支时触发
+  # 只在 Update Servers List 工作流完成后触发
   workflow_run:
-    workflows: ["Update Servers List"]  # 当服务器更新工作流完成后触发
+    workflows: ["Update Servers List"]
     types:
       - completed
+    branches: [main, master]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    # 如果是由 Update Servers List 触发的，只在其成功时运行
-    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    # 只在 Update Servers List 成功时运行
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # 获取所有历史记录
+          ref: ${{ github.event.workflow_run.head_branch }}  # 检出触发工作流的分支
+          fetch-depth: 0
       
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -25,7 +26,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'  # 上传整个仓库
+          path: '.'
       
       - name: Deploy to GitHub Pages
         id: deployment
