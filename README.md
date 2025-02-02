@@ -1,6 +1,7 @@
 # JetBrains 激活服务器列表自动更新
 
 [![Update JetBrains Servers](https://github.com/cuijianzhuang/jetbrains_servers_updater/actions/workflows/update-servers.yml/badge.svg)](https://github.com/cuijianzhuang/jetbrains_servers_updater/actions/workflows/update-servers.yml)
+[![Deploy to GitHub Pages](https://github.com/cuijianzhuang/jetbrains_servers_updater/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/cuijianzhuang/jetbrains_servers_updater/actions/workflows/deploy-pages.yml)
 
 这个项目使用 GitHub Actions 自动获取并更新 JetBrains IDE 的激活服务器列表。每天早上9点（北京时间）自动更新。
 
