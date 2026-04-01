@@ -27,21 +27,15 @@
 
 1. 克隆仓库
    ```bash
-   git clone https://github.com/cuijianzhuang/jetbrains_servers_updater.git
+   git clone https://github.com/NixiakAI/jetbrains_servers_updater.git
    cd jetbrains_servers_updater
 
 
-2. 安装依赖：
-   ```bash
-   pip install shodan
+2. 无需安装依赖，请注册一个shando免费账号即可
    
 
-3. 设置环境变量：
-   ```bash
-   Linux/macOS
-   export SHODAN_API_KEY="your-api-key"
-   Windows
-   set SHODAN_API_KEY=your-api-key
+3. 无需设置环境变量：
+
 
 4. 运行
    ```bash
