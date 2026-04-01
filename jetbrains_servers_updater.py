@@ -1,23 +1,24 @@
-import shodan
-import os
 from datetime import datetime
+import os
 import pytz
 from typing import List
 import requests
-
-# 从环境变量获取 Shodan API 密钥
-SHODAN_API_KEY = os.getenv('SHODAN_API_KEY')
-
-#调试
-# SHODAN_API_KEY = ''
+import re
+import brotli
 
 # 输出文件路径
 OUTPUT_FILE = "jetbrains_servers.txt"
 
+
+# Shodan的账号和密码
+USERNAME = os.getenv('SHODAN_USERNAME')
+PASSWORD = os.getenv('SHODAN_PASSWORD')
+
+
 def get_beijing_time():
     """
     获取北京时间
-    
+
     Returns:
         str: 格式化的北京时间字符串
     """
@@ -25,41 +26,76 @@ def get_beijing_time():
     beijing_time = datetime.now(beijing_tz)
     return beijing_time.strftime('%Y-%m-%d %H:%M:%S')
 
-def get_activation_servers() -> List[str]:
-    """
-    使用Shodan API获取JetBrains激活服务器列表
-    """
+def Shodanapi():
+    url = "https://account.shodan.io/login"
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+    }
+    matches = []
+
     try:
-        if not SHODAN_API_KEY:
-            raise ValueError("未设置 SHODAN_API_KEY 环境变量")
-            
-        api = shodan.Shodan(SHODAN_API_KEY)
-        
-        # 搜索查询
-        query = 'Location: https://account.jetbrains.com/fls-auth'
-        results = api.search(query)
-        
-        print(f"搜索结果: {len(results['matches'])} 个匹配项")
-        
-        servers = []
-        for result in results['matches']:
-            ip = result['ip_str']
-            port = result.get('port', 443)
-            
-            # 构建服务器URL
-            if port == 443:
-                server_url = f"https://{ip}"
+        session = requests.Session()
+        response = session.get(url, headers=headers, timeout=10)
+        raw_content = response.content
+
+        content_encoding = response.headers.get('Content-Encoding', '').lower()
+        html_content = None
+
+        if 'br' in content_encoding:
+            try:
+                decompressed = brotli.decompress(raw_content)
+                html_content = decompressed.decode('utf-8')
+            except:
+                html_content = raw_content.decode('utf-8')
+        else:
+            html_content = response.text
+
+        csrf_token = None
+        patterns = [
+            r'name="csrf_token"\s+value="([^"]+)"',
+            r'<input[^>]*name="csrf_token"[^>]*value="([^"]+)"',
+        ]
+
+        for pattern in patterns:
+            match = re.search(pattern, html_content, re.IGNORECASE)
+            if match:
+                csrf_token = match.group(1)
+                break
+
+        if csrf_token:
+
+
+            login_data = {
+                'username': USERNAME,
+                'password': PASSWORD,
+                'csrf_token': csrf_token,
+                'continue': 'https://www.shodan.io/',
+                'login_submit': 'Login'
+            }
+
+            login_url = "https://account.shodan.io/login"
+            session.post(login_url, data=login_data, headers=headers, allow_redirects=True)
+
+            search_url = "https://www.shodan.io/search"
+            params = {'query': "account.jetbrains.com/fls-auth"}
+            response = session.get(search_url, params=params, headers=headers, timeout=30)
+
+            if 'br' in response.headers.get('Content-Encoding', '').lower():
+                try:
+                    decompressed = brotli.decompress(response.content)
+                    html_content = decompressed.decode('utf-8')
+                except:
+                    html_content = response.text
             else:
-                server_url = f"http://{ip}:{port}"
-            
-            servers.append(server_url)
-        
-        print(f"处理后的服务器数量: {len(servers)}")
-        return servers
-    
+                html_content = response.text
+
+            pattern = r'http://(?:[0-9]{1,3}\.){3}[0-9]{1,3}:[0-9]+'
+            matches = re.findall(pattern, html_content)
+        return matches
+
     except Exception as e:
-        print(f"获取服务器时出错: {str(e)}")
-        return []
+        print(f"发生错误: {e}")
+
 
 def generate_html(valid_servers: List[str], invalid_servers: List[str]) -> None:
     """
@@ -69,9 +105,9 @@ def generate_html(valid_servers: List[str], invalid_servers: List[str]) -> None:
     if total_servers == 0:
         print("没有服务器数据，跳过生成HTML")
         return
-        
+
     print(f"开始生成HTML，总服务器数量: {total_servers}")
-    
+
     html_content = f"""
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -633,7 +669,7 @@ def generate_html(valid_servers: List[str], invalid_servers: List[str]) -> None:
 </head>
 <body>
     <div class="progress-bar" id="progressBar" style="width: 0%"></div>
-    
+
     <nav class="navbar">
         <div class="navbar-content">
             <div class="navbar-brand">JetBrains Servers</div>
@@ -643,7 +679,7 @@ def generate_html(valid_servers: List[str], invalid_servers: List[str]) -> None:
             </div>
         </div>
     </nav>
-    
+
     <div class="hero-spacer"></div>
     <div class="container">
         <div class="header">
@@ -651,7 +687,7 @@ def generate_html(valid_servers: List[str], invalid_servers: List[str]) -> None:
             <div class="subtitle">实时监控和验证服务器状态</div>
             <div class="update-time">更新时间: {get_beijing_time()}</div>
         </div>
-        
+
         <div class="stats-container">
             <div class="stats-card">
                 <div class="stats-value">{total_servers}</div>
@@ -697,23 +733,23 @@ def generate_html(valid_servers: List[str], invalid_servers: List[str]) -> None:
     </footer>
 
     <div class="back-to-top" id="backToTop" title="返回顶部"></div>
-        
-    
+
+
     <script>
     async function copyToClipboard(button, text) {{
         try {{
             await navigator.clipboard.writeText(text);
             const originalText = button.textContent;
-            
+
             // 添加复制成功反馈
             button.textContent = '已复制 ✓';
             button.classList.add('copied');
-            
+
             // 添加触觉反馈（如果支持）
             if (navigator.vibrate) {{
                 navigator.vibrate(50);
             }}
-            
+
             setTimeout(() => {{
                 button.textContent = originalText;
                 button.classList.remove('copied');
@@ -745,29 +781,29 @@ def generate_html(valid_servers: List[str], invalid_servers: List[str]) -> None:
     const backToTop = document.getElementById('backToTop');
     const progressBar = document.getElementById('progressBar');
     let lastScroll = 0;
-    
+
     window.addEventListener('scroll', () => {{
         const currentScroll = window.pageYOffset;
-        
+
         // 导航栏效果
         if (currentScroll > 50) {{
             navbar.classList.add('scrolled');
         }} else {{
             navbar.classList.remove('scrolled');
         }}
-        
+
         // 返回顶部按钮
         if (currentScroll > 300) {{
             backToTop.classList.add('show');
         }} else {{
             backToTop.classList.remove('show');
         }}
-        
+
         // 进度条
         const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
         const scrolled = (currentScroll / windowHeight) * 100;
         progressBar.style.width = scrolled + '%';
-        
+
         lastScroll = currentScroll;
     }});
 
@@ -829,7 +865,7 @@ def generate_html(valid_servers: List[str], invalid_servers: List[str]) -> None:
 </body>
 </html>
     """
-    
+
     try:
         with open('index.html', 'w', encoding='utf-8') as f:
             f.write(html_content)
@@ -837,10 +873,11 @@ def generate_html(valid_servers: List[str], invalid_servers: List[str]) -> None:
     except Exception as e:
         print(f"生成HTML文件时出错: {str(e)}")
 
+
 def update_servers_file(servers: List[str], invalid_servers: List[str] = None) -> None:
     """
     更新服务器列表文件
-    
+
     Args:
         servers: 有效服务器列表
         invalid_servers: 无效服务器列表（可选）
@@ -852,10 +889,10 @@ def update_servers_file(servers: List[str], invalid_servers: List[str] = None) -
             for server in servers:
                 f.write(f"{server}\n")
         print(f"成功更新服务器列表，共{len(servers)}个有效服务器")
-        
+
         # 生成HTML文件
         generate_html(servers, invalid_servers or [])
-        
+
         # 显示文件内容
         print("\n=== 服务器列表内容 ===")
         with open(OUTPUT_FILE, 'r', encoding='utf-8') as f:
@@ -864,13 +901,14 @@ def update_servers_file(servers: List[str], invalid_servers: List[str] = None) -
     except Exception as e:
         print(f"写入文件时出错: {str(e)}")
 
+
 def test_server(server_url):
     """
     测试服务器连接是否有效
-    
+
     Args:
         server_url (str): 要测试的服务器URL
-    
+
     Returns:
         bool: 如果服务器有效返回True，否则返回False
     """
@@ -878,10 +916,10 @@ def test_server(server_url):
         # 确保URL格式正确
         if not server_url.startswith(('http://', 'https://')):
             server_url = f'http://{server_url}'
-            
+
         # 设置超时时间为5秒
         response = requests.get(server_url, timeout=5)
-        
+
         # 检查响应状态码
         if response.status_code == 200:
             return True
@@ -890,25 +928,26 @@ def test_server(server_url):
         print(f"测试服务器 {server_url} 时发生错误: {str(e)}")
         return False
 
+
 def test_all_servers(servers_list):
     """
     测试所有服务器并返回有效的服务器列表
-    
+
     Args:
         servers_list (list): 要测试的服务器URL列表
-    
+
     Returns:
         tuple: (有效服务器列表, 无效服务器列表)
     """
     valid_servers = []
     invalid_servers = []
-    
+
     # ANSI颜色代码
     GREEN_BG = '\033[42m'
     RED_BG = '\033[41m'
     WHITE_TEXT = '\033[37m'
     RESET = '\033[0m'
-    
+
     for server in servers_list:
         print(f"正在测试服务器: {server}")
         if test_server(server):
@@ -917,38 +956,39 @@ def test_all_servers(servers_list):
         else:
             invalid_servers.append(server)
             print(f"{RED_BG}{WHITE_TEXT}服务器 {server} 无效{RESET}")
-    
+
     return valid_servers, invalid_servers
+
 
 def main():
     print(f"开始更新服务器列表 - {get_beijing_time()}")
-    servers = get_activation_servers()
+    servers = Shodanapi()
     if servers:
         # 先测试所有获取到的服务器
         print("\n开始测试服务器...")
         valid_servers, invalid_servers = test_all_servers(servers)
-        
+
         # ANSI颜色代码
         GREEN_BG = '\033[42m'
         RED_BG = '\033[41m'
         WHITE_TEXT = '\033[37m'
         RESET = '\033[0m'
-        
+
         print(f"\n测试完成！")
         print(f"统计信息:")
         print(f"- 总服务器数量: {len(servers)}")
         print(f"- 有效服务器数量: {len(valid_servers)}")
         print(f"- 无效服务器数量: {len(invalid_servers)}")
-        
+
         print("\n所有服务器状态:")
         print("有效服务器:")
         for server in valid_servers:
             print(f"{GREEN_BG}{WHITE_TEXT}{server}{RESET}")
-            
+
         print("\n无效服务器:")
         for server in invalid_servers:
             print(f"{RED_BG}{WHITE_TEXT}{server}{RESET}")
-        
+
         # 只更新有效的服务器到文件
         if valid_servers:
             update_servers_file(valid_servers, invalid_servers)
@@ -957,5 +997,6 @@ def main():
     else:
         print("未获取到服务器，跳过更新")
 
+
 if __name__ == "__main__":
-    main() 
+    main()
