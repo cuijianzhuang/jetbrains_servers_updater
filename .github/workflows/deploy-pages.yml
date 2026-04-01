@@ -10,7 +10,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: iv-ye644hxpfkqc6il25nnd
     # 只在 Update Servers List 成功时运行
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     
