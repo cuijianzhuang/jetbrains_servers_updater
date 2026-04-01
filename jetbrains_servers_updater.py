@@ -1,4 +1,5 @@
 from datetime import datetime
+import os
 import pytz
 from typing import List
 import requests
@@ -7,9 +8,12 @@ import brotli
 
 # 输出文件路径
 OUTPUT_FILE = "jetbrains_servers.txt"
+
+
 # Shodan的账号和密码
-username = ''
-password = ''
+USERNAME = os.getenv('SHODAN_USERNAME')
+PASSWORD = os.getenv('SHODAN_PASSWORD')
+
 
 def get_beijing_time():
     """
@@ -61,8 +65,8 @@ def Shodanapi():
 
 
             login_data = {
-                'username': username,
-                'password': password,
+                'username': USERNAME,
+                'password': PASSWORD,
                 'csrf_token': csrf_token,
                 'continue': 'https://www.shodan.io/',
                 'login_submit': 'Login'
