@@ -15,6 +15,8 @@ USERNAME = os.getenv('SHODAN_USERNAME')
 PASSWORD = os.getenv('SHODAN_PASSWORD')
 PROXYUSER = os.getenv('SHODAN_PROXYUSER')
 
+print(USERNAME,PASSWORD,PROXYUSER)
+
 # 代理服务器列表（可自行扩展）
 PROXY_LIST = [
     # 国内代理服务器
