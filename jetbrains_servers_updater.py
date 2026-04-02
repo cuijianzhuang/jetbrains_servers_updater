@@ -79,7 +79,7 @@ def Shodanapi():
 
             search_url = "https://www.shodan.io/search"
             params = {'query': "account.jetbrains.com/fls-auth"}
-            response = session.get(search_url, params=params, headers=headers, timeout=30)
+            response = session.get(search_url, params=params, headers=headers, timeout=300)
 
             if 'br' in response.headers.get('Content-Encoding', '').lower():
                 try:
@@ -919,7 +919,7 @@ def test_server(server_url):
             server_url = f'http://{server_url}'
 
         # 设置超时时间为5秒
-        response = requests.get(server_url, timeout=5)
+        response = requests.get(server_url, timeout=300)
 
         # 检查响应状态码
         if response.status_code == 200:
