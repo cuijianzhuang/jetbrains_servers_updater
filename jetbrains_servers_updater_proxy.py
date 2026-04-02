@@ -11,9 +11,9 @@ import random
 OUTPUT_FILE = "jetbrains_servers.txt"
 
 # Shodan的账号和密码
-USERNAME = os.getenv('SHODAN_USERNAME')
-PASSWORD = os.getenv('SHODAN_PASSWORD')
-PROXYUSER = os.getenv('SHODAN_PROXYUSER')
+USERNAME = os.getenv('USERNAME')
+PASSWORD = os.getenv('PASSWORD')
+PROXYUSER = os.getenv('PROXYUSER')
 
 print(USERNAME,PASSWORD,PROXYUSER)
 
