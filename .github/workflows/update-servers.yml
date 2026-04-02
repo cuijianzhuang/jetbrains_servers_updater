@@ -33,12 +33,7 @@ jobs:
         
     - name: Update and commit changes
       run: |
-        # 设置临时环境变量，只在执行 Python 脚本时生效
-        export http_proxy="http://115.190.178.71:3128"
-        export https_proxy="http://115.190.178.71:3128"
         python jetbrains_servers_updater.py
-        unset http_proxy https_proxy
-        
         git add .
         git diff --quiet && git diff --staged --quiet || (git commit -m "Update servers list" && git push)
       env:
