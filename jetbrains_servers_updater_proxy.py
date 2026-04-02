@@ -15,14 +15,11 @@ USERNAME = os.getenv('USERNAME')
 PASSWORD = os.getenv('PASSWORD')
 PROXYUSER = os.getenv('PROXYUSER')
 
-print(USERNAME,PASSWORD,PROXYUSER)
 
 # 代理服务器列表（可自行扩展）
 PROXY_LIST = [
-   "115.190.178.71:3128"
-   
+   PROXYUSER  
 ]
-
 
 def get_random_proxy():
     """
@@ -74,29 +71,9 @@ def get_session_with_retry(max_retries=3):
     return session
 
 
-def test_proxy(proxy_config, timeout=5):
-    """
-    测试代理是否可用
-
-    Args:
-        proxy_config (dict): 代理配置
-        timeout (int): 超时时间
-
-    Returns:
-        bool: 代理是否可用
-    """
-    try:
-        test_url = "http://httpbin.org/ip"
-        response = requests.get(test_url, proxies=proxy_config, timeout=timeout)
-        if response.status_code == 200:
-            print(f"代理可用: {proxy_config}")
-            return True
-    except Exception as e:
-        print(f"代理测试失败: {proxy_config} - {str(e)}")
-    return True
 
 
-def get_working_proxy(max_attempts=1):
+def get_working_proxy(max_attempts=5):
     """
     获取可用的代理
 
@@ -111,12 +88,8 @@ def get_working_proxy(max_attempts=1):
 
     for attempt in range(max_attempts):
         proxy_config = get_random_proxy()
-        if test_proxy(proxy_config):
-            return proxy_config
-        print(f"代理尝试 {attempt + 1}/{max_attempts} 失败，更换代理...")
+        return proxy_config
 
-    print("所有代理测试失败，将使用直连")
-    return None
 
 
 def Shodanapi():
