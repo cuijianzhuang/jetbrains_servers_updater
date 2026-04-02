@@ -19,8 +19,7 @@ print(USERNAME,PASSWORD,PROXYUSER)
 
 # 代理服务器列表（可自行扩展）
 PROXY_LIST = [
-    # 国内代理服务器
-PROXYUSER
+   "115.190.178.71:3128"
    
 ]
 
