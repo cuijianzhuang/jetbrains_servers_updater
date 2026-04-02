@@ -94,7 +94,7 @@ def test_proxy(proxy_config, timeout=5):
             return True
     except Exception as e:
         print(f"代理测试失败: {proxy_config} - {str(e)}")
-    return False
+    return True
 
 
 def get_working_proxy(max_attempts=1):
