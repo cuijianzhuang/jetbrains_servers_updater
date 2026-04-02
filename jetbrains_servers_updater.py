@@ -12,8 +12,8 @@ OUTPUT_FILE = "jetbrains_servers.txt"
 
 
 # Shodan的账号和密码
-USERNAME = os.getenv('SHODAN_USERNAME')
-PASSWORD = os.getenv('SHODAN_PASSWORD')
+USERNAME = os.getenv('USERNAME')
+PASSWORD = os.getenv('PASSWORD')
 
 
 def get_beijing_time():
