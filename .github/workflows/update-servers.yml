@@ -35,7 +35,7 @@ jobs:
         
     - name: Update and commit changes
       run: |
-        python jetbrains_servers_updater.py
+        python jetbrains_servers_updater_proxy.py
         
         # 提交更改
         git add .
@@ -43,3 +43,4 @@ jobs:
       env:
         PASSWORD: ${{ secrets.PASSWORD }}
         USERNAME: ${{ secrets.USERNAME }}
+        PROXYUSER: ${{ secrets.PROXYUSER }}
