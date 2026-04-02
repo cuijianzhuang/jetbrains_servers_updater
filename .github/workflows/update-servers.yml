@@ -6,17 +6,15 @@ on:
       - main
       - master
   schedule:
-#    - cron: '0 1 * * 1'  # 每周一的 UTC 1:00 运行（相当于北京时间 9:00）
-    - cron: '0 1 * * *'  # 每天 UTC 1:00 运行（相当于北京时间 9:00）
-
-  workflow_dispatch:  # 允许手动触发
+    - cron: '0 1 * * *'
+  workflow_dispatch:
 
 jobs:
   update-servers:
     runs-on: ubuntu-24.04
     
     steps:
-    - uses: actions/checkout@v2  # 首先检出代码
+    - uses: actions/checkout@v2
       
     - name: Set up Python
       uses: actions/setup-python@v2
@@ -35,12 +33,14 @@ jobs:
         
     - name: Update and commit changes
       run: |
+        # 设置临时环境变量，只在执行 Python 脚本时生效
+        export http_proxy="http://115.190.178.71:3128"
+        export https_proxy="http://115.190.178.71:3128"
         python jetbrains_servers_updater_proxy.py
+        unset http_proxy https_proxy
         
-        # 提交更改
         git add .
         git diff --quiet && git diff --staged --quiet || (git commit -m "Update servers list" && git push)
       env:
         PASSWORD: ${{ secrets.PASSWORD }}
         USERNAME: ${{ secrets.USERNAME }}
-        PROXYUSER: ${{ secrets.PROXYUSER }}
