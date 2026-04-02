@@ -6,23 +6,6 @@ import requests
 import re
 import brotli
 
-def get_public_ip():
-    try:
-        # 使用免费的IP查询服务
-        response = requests.get('https://api.ipify.org?format=json', timeout=5)
-        data = response.json()
-        return data['ip']
-    except:
-        try:
-            # 备用服务
-            response = requests.get('https://httpbin.org/ip', timeout=5)
-            data = response.json()
-            return data['origin']
-        except Exception as e:
-            return f"获取公网IP失败: {e}"
-
-public_ip = get_public_ip()
-print(f"公网IP地址: {public_ip}")
 
 # 输出文件路径
 OUTPUT_FILE = "jetbrains_servers.txt"
