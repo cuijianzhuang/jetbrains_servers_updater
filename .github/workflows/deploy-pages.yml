@@ -7,21 +7,23 @@ on:
     types:
       - completed
     branches: [main, master]
+  # 允许手动触发（例如自动部署失败时补跑）
+  workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    # 只在 Update Servers List 成功时运行
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    # workflow_run 触发时只在 Update Servers List 成功后运行；手动触发直接运行
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
-          ref: ${{ github.event.workflow_run.head_branch }}  # 检出触发工作流的分支
+          ref: ${{ github.event.workflow_run.head_branch || github.ref_name }}  # 检出触发工作流的分支；手动触发时回退到当前分支
           fetch-depth: 0
       
       - name: Setup Pages
-        uses: actions/configure-pages@v4
+        uses: actions/configure-pages@v5
       
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
@@ -30,7 +32,7 @@ jobs:
       
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
